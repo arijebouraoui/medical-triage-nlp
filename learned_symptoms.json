@@ -1,0 +1,58 @@
+{
+  "terms": {},
+  "metadata": {
+    "last_updated": "2025-12-22T15:05:31.261470",
+    "total_learned": 6,
+    "version": "1.0"
+  },
+  "learned_terms": {
+    "gencive_fr": {
+      "word": "gencive",
+      "category": "dental",
+      "language": "fr",
+      "confidence": 1.0,
+      "learned_date": "2025-12-21T23:00:34.130231",
+      "usage_count": 1
+    },
+    "coeur_fr": {
+      "word": "coeur",
+      "category": "cardiovascular",
+      "language": "fr",
+      "confidence": 1.0,
+      "learned_date": "2025-12-21T23:01:59.036108",
+      "usage_count": 1
+    },
+    "neck_en": {
+      "word": "neck",
+      "category": "ent",
+      "language": "en",
+      "confidence": 1.0,
+      "learned_date": "2025-12-22T15:02:08.946044",
+      "usage_count": 1
+    },
+    "heart_en": {
+      "word": "heart",
+      "category": "cardiovascular",
+      "language": "en",
+      "confidence": 1.0,
+      "learned_date": "2025-12-22T15:02:50.122481",
+      "usage_count": 1
+    },
+    "bras_fr": {
+      "word": "bras",
+      "category": "musculoskeletal",
+      "language": "fr",
+      "confidence": 1.0,
+      "learned_date": "2025-12-22T15:03:40.020584",
+      "usage_count": 1
+    },
+    "stomach_en": {
+      "word": "stomach",
+      "category": "gastrointestinal",
+      "language": "en",
+      "confidence": 1.0,
+      "learned_date": "2025-12-22T15:05:31.261470",
+      "usage_count": 1
+    }
+  }
+}

@@ -1,7 +1,5 @@
 """
-Interface Streamlit Professionnelle - Système de Triage Médical
-================================================================
-Interface moderne et interactive pour tester le système NLP
+Interface Streamlit 
 """
 
 import streamlit as st
@@ -9,17 +7,15 @@ import sys
 import os
 from datetime import datetime
 
-# Setup path
 project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from agents.data_loader.medical_data_loader import MedicalDataLoader
-from agents.analyzer.nlp_analyzer_v3 import CompleteNLPAnalyzer
+from agents.analyzer.nlp_analyzer_v3 import MedicalNLPAnalyzer
 from agents.reasoner.medical_reasoner import MedicalReasoner
 from agents.decider.decision_generator import DecisionGenerator
 
-# Configuration de la page
 st.set_page_config(
     page_title="🏥 Triage Médical Intelligent",
     page_icon="🏥",
@@ -27,7 +23,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS personnalisé
 st.markdown("""
 <style>
     .main-header {
@@ -43,169 +38,144 @@ st.markdown("""
         text-align: center;
         margin-bottom: 3rem;
     }
-    .stAlert {
-        border-radius: 10px;
-    }
-    .symptom-card {
-        background-color: #E3F2FD;
-        padding: 1rem;
-        border-radius: 10px;
-        margin: 0.5rem 0;
-        border-left: 4px solid #1E88E5;
-    }
-    .disease-card {
-        background-color: #FFF3E0;
-        padding: 1rem;
-        border-radius: 10px;
-        margin: 0.5rem 0;
-        border-left: 4px solid #FF9800;
-    }
-    .urgency-high {
-        background-color: #FFEBEE;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 4px solid #F44336;
-    }
-    .urgency-medium {
-        background-color: #FFF3E0;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 4px solid #FF9800;
-    }
-    .urgency-low {
-        background-color: #E8F5E9;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 4px solid #4CAF50;
-    }
-    .nlp-step {
-        background-color: #F5F5F5;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# Initialisation session state
 if 'initialized' not in st.session_state:
     st.session_state.initialized = False
-    st.session_state.analyzer = None
-    st.session_state.reasoner = None
-    st.session_state.decider = None
     st.session_state.history = []
+    st.session_state.selected_country = "Tunisie"  # Défaut
 
-# Fonction d'initialisation
 @st.cache_resource
 def init_system():
-    """Initialise le système médical"""
     try:
         data_path = "data/processed/dataset_processed.json"
-        
-        analyzer = CompleteNLPAnalyzer(data_path)
-        reasoner = MedicalReasoner()
-        decider = DecisionGenerator()
-        
-        return analyzer, reasoner, decider, True
+        data_loader = MedicalDataLoader(data_path)
+        analyzer = MedicalNLPAnalyzer(data_path)
+        reasoner = MedicalReasoner(data_loader)
+        return analyzer, reasoner, data_loader, True
     except Exception as e:
-        st.error(f"❌ Erreur d'initialisation: {e}")
+        st.error(f"❌ Erreur: {e}")
         return None, None, None, False
 
-# Header
 st.markdown('<div class="main-header">🏥 Système de Triage Médical Intelligent</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Analyse NLP Avancée • Multilingue • Data-Driven AI</div>', unsafe_allow_html=True)
 
-# Sidebar
+# WARNING: Vérification des dépendances pour l'utilisateur
+try:
+    import deep_translator
+    HAS_TRANSLATOR = True
+except ImportError:
+    HAS_TRANSLATOR = False
+
+try:
+    import spacy
+    HAS_SPACY = True
+except ImportError:
+    HAS_SPACY = False
+
+try:
+    from spellchecker import SpellChecker
+    HAS_PYSPELLCHECKER = True
+except ImportError:
+    HAS_PYSPELLCHECKER = False
+
 with st.sidebar:
     st.header("⚙️ Configuration")
     
-    # Pays
-    country = st.selectbox(
-        "🌍 Pays",
-        ["Tunisie", "France", "Maroc", "Algérie"],
-        index=0
-    )
+    # IMPORTANT: Sauvegarder le pays sélectionné
+    country = st.selectbox("🌍 Pays", ["Tunisie", "France", "UK", "USA", "Canada"], index=0)
+    st.session_state.selected_country = country
     
-    # Langue
-    language = st.selectbox(
-        "🗣️ Langue préférée",
-        ["Français", "English", "العربية"],
-        index=0
-    )
+    language = st.selectbox("🗣️ Langue", ["Français", "English", "العربية"], index=0)
     
     st.divider()
     
-    # Stats
     st.header("📊 Statistiques")
     if st.session_state.history:
         st.metric("Consultations", len(st.session_state.history))
         total_symptoms = sum(len(h['symptoms']) for h in st.session_state.history)
-        st.metric("Symptômes détectés", total_symptoms)
+        st.metric("Symptômes", total_symptoms)
     else:
-        st.info("Aucune consultation pour le moment")
+        st.info("Aucune consultation")
     
     st.divider()
     
-    # Actions
+    st.header("🔌 État du Système")
+    if HAS_TRANSLATOR:
+        st.success("✅ Traducteur Auto (Online)")
+    else:
+        st.error("❌ Traducteur Manquant")
+        st.caption("`pip install deep-translator`")
+        
+    if HAS_SPACY:
+        st.success("✅ NLP Avancé (SpaCy)")
+    else:
+        st.warning("⚠️ NLP Basique")
+        st.caption("`python -m spacy download en_core_web_md`")
+
+    if HAS_PYSPELLCHECKER:
+        st.success("✅ Correcteur (Standard)")
+    else:
+        st.error("❌ Correcteur Manquant")
+        st.caption("`pip install pyspellchecker`")
+    
+    st.divider()
+    
     if st.button("🔄 Réinitialiser", use_container_width=True):
         st.session_state.history = []
         st.rerun()
-    
-    if st.button("📥 Télécharger historique", use_container_width=True):
-        st.info("Fonctionnalité bientôt disponible")
 
-# Initialisation du système
 if not st.session_state.initialized:
-    with st.spinner("🔧 Initialisation du système médical..."):
-        analyzer, reasoner, decider, success = init_system()
+    with st.spinner("🔧 Initialisation..."):
+        analyzer, reasoner, data_loader, success = init_system()
         
         if success:
             st.session_state.analyzer = analyzer
             st.session_state.reasoner = reasoner
-            st.session_state.decider = decider
+            st.session_state.data_loader = data_loader
             st.session_state.initialized = True
-            st.success("✅ Système initialisé avec succès!")
+            st.success("✅ Système prêt!")
         else:
-            st.error("❌ Impossible d'initialiser le système")
+            st.error("❌ Erreur d'initialisation")
             st.stop()
 
-# Interface principale
 tab1, tab2, tab3 = st.tabs(["🩺 Consultation", "📊 Analyse Détaillée", "📚 Historique"])
 
 with tab1:
     st.header("🩺 Décrivez vos symptômes")
     
-    # Zone de saisie
     patient_input = st.text_area(
-        "💬 Entrez vos symptômes en langage naturel",
-        placeholder="Ex: J'ai mal à la tête et je me sens fatigué...\nEx: I have chest pain and difficulty breathing...",
-        height=120,
-        help="Vous pouvez écrire en français, anglais ou arabe"
+        "💬 Entrez vos symptômes",
+        placeholder="Ex: J'ai mal aux dents...",
+        height=120
     )
     
-    col1, col2, col3 = st.columns([1, 1, 2])
+    col1, col2 = st.columns([1, 3])
     
     with col1:
         analyze_button = st.button("🔍 Analyser", type="primary", use_container_width=True)
     
-    with col2:
-        if st.button("🗑️ Effacer", use_container_width=True):
-            st.rerun()
-    
-    # Analyse
     if analyze_button and patient_input:
-        with st.spinner("⏳ Analyse en cours..."):
+        with st.spinner("⏳ Analyse..."):
             try:
-                # Analyse NLP
                 analysis = st.session_state.analyzer.analyze(patient_input)
-                
-                # Raisonnement médical
                 reasoning = st.session_state.reasoner.reason(analysis)
                 
-                # Génération décision
-                decision = st.session_state.decider.generate_decision(reasoning)
+                # FIX: Créer DecisionGenerator avec le pays sélectionné
+                decider = DecisionGenerator(patient_country=st.session_state.selected_country)
+                decision = decider.generate_decision(reasoning)
                 
-                # Sauvegarder dans historique
+                st.session_state.current_analysis = analysis
+                st.session_state.current_reasoning = reasoning
+                
+                # ML DATA
+                ml_used = analysis.get('ml_used', False)
+                ml_spec = analysis.get('ml_specialist', 'N/A')
+                ml_spec_conf = analysis.get('ml_specialist_confidence', 0)
+                ml_urgency = analysis.get('ml_urgency', 'N/A')
+                ml_urgency_conf = analysis.get('ml_urgency_confidence', 0)
+                
                 st.session_state.history.append({
                     'timestamp': datetime.now(),
                     'input': patient_input,
@@ -214,112 +184,138 @@ with tab1:
                     'urgency': reasoning.get('urgency', 'UNKNOWN')
                 })
                 
-                # Affichage résultats
                 st.success("✅ Analyse terminée!")
                 
-                # Urgence
                 urgency = reasoning.get('urgency', 'URGENCE MODÉRÉE')
                 
                 if 'ÉLEVÉE' in urgency or 'VITALE' in urgency:
-                    st.markdown('<div class="urgency-high">', unsafe_allow_html=True)
-                    st.error(f"🚨 **URGENCE: {urgency}**")
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.error(f"🚨 **{urgency}**")
                 elif 'MODÉRÉE' in urgency:
-                    st.markdown('<div class="urgency-medium">', unsafe_allow_html=True)
-                    st.warning(f"⚠️ **Urgence: {urgency}**")
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.warning(f"⚠️ **{urgency}**")
                 else:
-                    st.markdown('<div class="urgency-low">', unsafe_allow_html=True)
-                    st.info(f"ℹ️ **Urgence: {urgency}**")
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.info(f"ℹ️ **{urgency}**")
                 
-                # Résultats en colonnes
+                # VISUALISATION CERVEAU IA
+                if ml_used:
+                    with st.expander("🧠 Analyse du Cerveau Artificiel (True NLP)", expanded=True):
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            st.metric("Confiance Spécialiste", f"{ml_spec_conf:.1%}", delta="AI Model")
+                        # Comparaison Final vs IA (Spécialiste)
+                        final_specialist = reasoning.get('specialist')
+                        st.write(f"Suggestion IA: **{ml_spec}**")
+                        
+                        if ml_spec != final_specialist:
+                             st.info(f"🛡️ **Protocole de Sécurité**\nLe système a priorisé **{final_specialist}** au lieu de l'IA.")
+
+                        with c2:
+                            st.metric("Confiance Urgence", f"{ml_urgency_conf:.1%}", delta="AI Model")
+                            
+                            # Comparaison Final vs IA (Urgence)
+                            final_urgency = reasoning.get('urgency')
+                            st.write(f"Suggestion IA: **{ml_urgency}**")
+
+                            if ml_urgency != final_urgency:
+                                st.error(f"🚨 **Niveau d'Urgence Ajusté**\nL'IA proposait *{ml_urgency}*, mais les symptômes requièrent **{final_urgency}**.")
+
+                        if ml_spec_conf > 0.4 and ml_spec == final_specialist:
+                            st.caption("✅ L'IA confirme le diagnostic.")
+                        elif ml_spec != final_specialist:
+                            pass # Déjà géré au dessus
+                        else:
+                            st.caption("⚠️ L'IA est incertaine, le système utilise les règles de sécurité.")
+                
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.subheader("💊 Symptômes détectés")
+                    st.subheader("💊 Symptômes")
                     if analysis['symptoms']:
-                        for symptom in analysis['symptoms'][:5]:
-                            st.markdown(f"""
-                            <div class="symptom-card">
-                                <strong>{symptom['symptom']}</strong><br>
-                                <small>Confiance: {symptom['confidence']:.0%} • Méthode: {symptom['method']}</small>
-                            </div>
-                            """, unsafe_allow_html=True)
+                        for s in analysis['symptoms'][:5]:
+                            st.write(f"• **{s['symptom']}** ({s['confidence']:.0%})")
                     else:
-                        st.info("Aucun symptôme détecté")
+                        st.info("Aucun symptôme")
                 
                 with col2:
                     st.subheader("🏥 Maladies possibles")
                     if analysis['possible_diseases']:
                         for disease, info in list(analysis['possible_diseases'].items())[:3]:
-                            st.markdown(f"""
-                            <div class="disease-card">
-                                <strong>{disease}</strong><br>
-                                <small>Score: {info['score']} • Urgence: {info['urgency']}</small>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            st.write(f"• **{disease}** (Score: {info['score']})")
                     else:
-                        st.info("Aucune maladie identifiée")
+                        st.info("Aucune maladie")
                 
-                # Recommandations
                 st.subheader("💡 Recommandations")
                 
                 recommendations = reasoning.get('recommendations', [])
-                if recommendations:
-                    for i, rec in enumerate(recommendations[:4], 1):
-                        st.markdown(f"**{i}.** {rec}")
+                for i, rec in enumerate(recommendations[:4], 1):
+                    st.write(f"{i}. {rec}")
                 
-                # Spécialiste
                 specialist = reasoning.get('specialist', 'Médecin généraliste')
                 timing = reasoning.get('timing', '24-48 heures')
                 
-                st.info(f"👨‍⚕️ **Spécialiste recommandé:** {specialist}\n\n⏰ **Délai:** {timing}")
+                st.info(f"👨‍⚕️ **Spécialiste:** {specialist}\n\n⏰ **Délai:** {timing}")
                 
-                # Numéros d'urgence
-                st.subheader("🚨 Numéros d'urgence")
-                emergency = analysis.get('emergency_numbers', {})
+                # FIX: Utiliser les numéros du DecisionGenerator
+                st.subheader(f"🚨 Numéros d'urgence ({st.session_state.selected_country})")
+                emergency = decider.emergency_numbers.get(st.session_state.selected_country, {})
                 
                 cols = st.columns(4)
                 if emergency:
-                    with cols[0]:
-                        st.metric("SAMU", emergency.get('samu', '190'))
-                    with cols[1]:
-                        st.metric("Urgences", emergency.get('urgences', '197'))
-                    with cols[2]:
-                        st.metric("Police", emergency.get('police', '197'))
-                    with cols[3]:
-                        st.metric("Pompiers", emergency.get('pompiers', '198'))
+                    idx = 0
+                    for key, value in emergency.items():
+                        if idx < 4:
+                            with cols[idx]:
+                                st.metric(key.capitalize(), value)
+                            idx += 1
                 
-                # Avertissement
-                st.warning("⚠️ **Important:** Ce système ne remplace pas un médecin. En cas de doute, consultez un professionnel de santé.")
+                st.warning("⚠️ Ce système ne remplace pas un médecin.")
+                
+                st.divider()
+                st.write("Ceci était-il correct ?")
+                b1, b2 = st.columns(2)
+                if b1.button("👍 Oui"):
+                    st.toast("Merci pour votre feedback ! L'IA apprendra de ce cas.")
+                    # TODO: Sauvegarder pour retraining
+                if b2.button("👎 Non"):
+                    st.toast("Noté. Nous allons vérifier ce cas.")
                 
             except Exception as e:
-                st.error(f"❌ Erreur lors de l'analyse: {e}")
+                st.error(f"❌ Erreur: {e}")
 
 with tab2:
     st.header("📊 Analyse NLP Détaillée")
     
-    if analyze_button and patient_input:
+    if hasattr(st.session_state, 'current_analysis'):
+        analysis = st.session_state.current_analysis
+        
         st.subheader("🔬 Processus NLP Complet")
         
-        # Les étapes NLP
-        steps = [
-            ("1️⃣ Détection Langue", f"Langue: {analysis.get('detected_language', 'N/A')}"),
-            ("2️⃣ Correction Orthographique", f"{len(analysis.get('corrections', []))} correction(s)"),
-            ("3️⃣ Normalisation", "Termes médicaux normalisés"),
-            ("4️⃣ Tokenization", f"{len(analysis.get('processed_text', '').split())} tokens"),
-            ("5️⃣ TF-IDF", "Pondération des termes importants"),
-            ("6️⃣ POS Tagging", "Extraction NOUN/ADJ"),
-            ("7️⃣ Word2Vec", "Similarités sémantiques"),
-            ("8️⃣ Matching", f"{len(analysis['symptoms'])} symptômes trouvés"),
-        ]
+        with st.expander("1️⃣ Détection Langue", expanded=True):
+            st.write(f"**Langue détectée:** {analysis.get('detected_language', 'N/A').upper()}")
         
-        for title, desc in steps:
-            with st.expander(f"{title} - {desc}"):
-                st.write(desc)
+        with st.expander("2️⃣ Correction Orthographique"):
+            corrections = analysis.get('corrections', [])
+            if corrections:
+                st.write(f"**{len(corrections)} correction(s):**")
+                for c in corrections[:5]:
+                    st.write(f"• '{c.get('original', '')}' → '{c.get('corrected', '')}'")
+            else:
+                st.write("0 correction")
         
-        # Statistiques
+        with st.expander("3️⃣ Normalisation"):
+            st.write("Termes médicaux normalisés")
+            st.code(analysis.get('processed_text', ''))
+        
+        with st.expander("4️⃣ Tokenization"):
+            tokens = analysis.get('processed_text', '').split()
+            st.write(f"**{len(tokens)} tokens**")
+            st.write(tokens[:20])
+        
+        with st.expander("8️⃣ Matching"):
+            st.write(f"**{len(analysis['symptoms'])} symptôme(s) trouvé(s)**")
+            for s in analysis['symptoms']:
+                st.write(f"• **{s['symptom']}** - Méthode: {s['method']} - Confiance: {s['confidence']:.0%}")
+        
+        st.divider()
         st.subheader("📈 Statistiques")
         
         cols = st.columns(4)
@@ -327,7 +323,7 @@ with tab2:
         with cols[0]:
             st.metric("Symptômes", len(analysis['symptoms']))
         with cols[1]:
-            st.metric("Maladies", len(analysis['possible_diseases']))
+            st.metric("Maladies", len(analysis.get('possible_diseases', {})))
         with cols[2]:
             st.metric("Corrections", len(analysis.get('corrections', [])))
         with cols[3]:
@@ -337,31 +333,21 @@ with tab2:
         st.info("👆 Effectuez une analyse dans l'onglet Consultation pour voir les détails")
 
 with tab3:
-    st.header("📚 Historique des Consultations")
+    st.header("📚 Historique")
     
     if st.session_state.history:
         for i, entry in enumerate(reversed(st.session_state.history), 1):
             with st.expander(f"Consultation {len(st.session_state.history) - i + 1} - {entry['timestamp'].strftime('%d/%m/%Y %H:%M')}"):
-                st.markdown(f"**💬 Symptômes décrits:**\n\n{entry['input']}")
-                
-                st.markdown(f"**💊 Symptômes détectés:** {len(entry['symptoms'])}")
-                for symptom in entry['symptoms'][:3]:
-                    st.markdown(f"- {symptom['symptom']} ({symptom['confidence']:.0%})")
-                
-                st.markdown(f"**🏥 Maladies possibles:** {len(entry['diseases'])}")
-                for disease in list(entry['diseases'].keys())[:2]:
-                    st.markdown(f"- {disease}")
-                
-                st.markdown(f"**🚨 Urgence:** {entry['urgency']}")
+                st.write(f"**Input:** {entry['input']}")
+                st.write(f"**Symptômes:** {len(entry['symptoms'])}")
+                st.write(f"**Urgence:** {entry['urgency']}")
     else:
-        st.info("Aucune consultation enregistrée")
+        st.info("Aucune consultation")
 
-# Footer
 st.divider()
 st.markdown("""
-<div style='text-align: center; color: #757575; padding: 2rem 0;'>
-    <p><strong>Système de Triage Médical Intelligent v3.0</strong></p>
-    <p>Propulsé par NLP avancé • 4920 cas médicaux • Multilingue (FR/EN/AR)</p>
-    <p><small>⚠️ Ce système est un outil d'aide à la décision. Il ne remplace pas l'avis d'un professionnel de santé.</small></p>
+<div style='text-align: center; color: #757575;'>
+    <p><strong>Système de Triage Médical v3.0</strong></p>
+    <p>NLP Avancé • Multilingue • Data-Driven</p>
 </div>
 """, unsafe_allow_html=True)

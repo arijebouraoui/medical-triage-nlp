@@ -1,16 +1,26 @@
 """
-Script pour ajouter AUTOMATIQUEMENT le champ "specialist" 
-à TOUS les cas du dataset en fonction des symptômes
-==========================================================
+Setup Dataset - Ajoute automatiquement les spécialistes
+========================================================
+Exécute ce script UNE FOIS après installation
 """
 
 import json
 import shutil
 from datetime import datetime
+from collections import Counter
 
+# MAPPING INTELLIGENT: Symptômes prioritaires
+PRIORITY_SPECIALISTS = {
+    'chest pain': 'Cardiologue',
+    'heart attack': 'Cardiologue',
+    'cardiac': 'Cardiologue',
+    'toothache': 'Dentiste',
+    'tooth pain': 'Dentiste',
+    'gum bleeding': 'Dentiste',
+}
 
-# MAPPING AUTOMATIQUE symptôme → spécialiste
-SYMPTOM_TO_SPECIALIST = {
+# MAPPING PAR MOTS-CLÉS
+KEYWORD_SPECIALISTS = {
     # Dentaire
     'tooth': 'Dentiste',
     'teeth': 'Dentiste',
@@ -18,10 +28,9 @@ SYMPTOM_TO_SPECIALIST = {
     'dental': 'Dentiste',
     'jaw': 'Dentiste',
     
-    # Cardiologue
+    # Cardiologue  
     'chest': 'Cardiologue',
     'heart': 'Cardiologue',
-    'cardiac': 'Cardiologue',
     'palpitation': 'Cardiologue',
     
     # Gastro
@@ -31,27 +40,23 @@ SYMPTOM_TO_SPECIALIST = {
     'nausea': 'Gastro-entérologue',
     'vomit': 'Gastro-entérologue',
     'diarrh': 'Gastro-entérologue',
-    'constipat': 'Gastro-entérologue',
     
     # Neurologue
     'headache': 'Neurologue',
-    'migraine': 'Neurologue',
-    'dizziness': 'Neurologue',
     'head': 'Neurologue',
-    'brain': 'Neurologue',
+    'migraine': 'Neurologue',
+    'dizz': 'Neurologue',
     
     # Pneumologue
     'breath': 'Pneumologue',
     'lung': 'Pneumologue',
-    'respiratory': 'Pneumologue',
     'cough': 'Pneumologue',
     'phlegm': 'Pneumologue',
     
     # Dermatologue
     'skin': 'Dermatologue',
     'rash': 'Dermatologue',
-    'itching': 'Dermatologue',
-    'itchy': 'Dermatologue',
+    'itch': 'Dermatologue',
     'pimple': 'Dermatologue',
     
     # Ophtalmologue
@@ -73,56 +78,64 @@ SYMPTOM_TO_SPECIALIST = {
     # Rhumatologue
     'joint': 'Rhumatologue',
     'muscle': 'Rhumatologue',
-    'bone': 'Rhumatologue',
     'knee': 'Rhumatologue',
-    'hip': 'Rhumatologue',
     'back': 'Rhumatologue',
     'neck': 'Rhumatologue',
 }
 
 
 def determine_specialist(symptoms):
-    """Détermine automatiquement le spécialiste"""
+    """Détermine le spécialiste avec priorités"""
     
-    votes = []
-    
+    # 1. Vérifier priorités absolues
     for symptom in symptoms:
         symptom_lower = symptom.lower()
-        
-        # Chercher correspondance
-        for keyword, specialist in SYMPTOM_TO_SPECIALIST.items():
+        if symptom_lower in PRIORITY_SPECIALISTS:
+            return PRIORITY_SPECIALISTS[symptom_lower]
+    
+    # 2. Vote par mots-clés
+    votes = []
+    for symptom in symptoms:
+        symptom_lower = symptom.lower()
+        for keyword, specialist in KEYWORD_SPECIALISTS.items():
             if keyword in symptom_lower:
                 votes.append(specialist)
                 break
     
-    # Vote majoritaire
+    # 3. Vote majoritaire
     if votes:
-        from collections import Counter
         most_common = Counter(votes).most_common(1)
         return most_common[0][0]
     
     return 'Médecin généraliste'
 
 
-def add_specialists_to_dataset(dataset_path):
-    """Ajoute automatiquement specialist à tous les cas"""
+def setup_dataset():
+    """Configure le dataset automatiquement"""
     
     print("="*70)
-    print("🔧 AJOUT AUTOMATIQUE DES SPÉCIALISTES")
+    print("🔧 SETUP AUTOMATIQUE DU DATASET")
     print("="*70)
+    
+    dataset_path = "data/processed/dataset_processed.json"
     
     # Backup
     backup_path = dataset_path.replace('.json', f'_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json')
-    shutil.copy(dataset_path, backup_path)
-    print(f"✅ Backup: {backup_path}")
+    try:
+        shutil.copy(dataset_path, backup_path)
+        print(f"✅ Backup créé: {backup_path}")
+    except FileNotFoundError:
+        print(f"⚠️  Dataset non trouvé à: {dataset_path}")
+        print("   Assure-toi que le dataset existe!")
+        return False
     
     # Charger
-    with open(dataset_path, 'r') as f:
+    with open(dataset_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    print(f"\n📊 Total cas: {len(data)}")
+    print(f"\n📊 Dataset: {len(data)} cas")
     
-    # Ajouter specialist
+    # Ajouter spécialistes
     specialists_added = 0
     specialist_counts = {}
     
@@ -130,34 +143,33 @@ def add_specialists_to_dataset(dataset_path):
         symptoms = case.get('symptoms', [])
         
         if symptoms:
-            # Déterminer spécialiste automatiquement
             specialist = determine_specialist(symptoms)
-            
-            # Ajouter au cas
             case['specialist'] = specialist
             specialists_added += 1
-            
-            # Compter
             specialist_counts[specialist] = specialist_counts.get(specialist, 0) + 1
     
     # Sauvegarder
-    with open(dataset_path, 'w') as f:
-        json.dump(data, f, indent=2)
+    with open(dataset_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     print(f"\n✅ {specialists_added} spécialistes ajoutés!")
     
-    # Afficher distribution
+    # Distribution
     print(f"\n📊 Distribution des spécialistes:")
     for specialist, count in sorted(specialist_counts.items(), key=lambda x: x[1], reverse=True):
         print(f"   • {specialist}: {count} cas")
     
     print("\n" + "="*70)
-    print("✅ TERMINÉ!")
+    print("✅ SETUP TERMINÉ!")
     print("="*70)
+    print("\n🚀 Lance maintenant: streamlit run streamlit_app.py")
+    
+    return True
 
 
 if __name__ == "__main__":
-    dataset_path = "data/processed/dataset_processed.json"
-    add_specialists_to_dataset(dataset_path)
+    success = setup_dataset()
     
-    print("\n🚀 Relance Streamlit pour charger les spécialistes!")
+    if not success:
+        print("\n❌ Setup échoué! Vérifie que le dataset existe.")
+        exit(1)

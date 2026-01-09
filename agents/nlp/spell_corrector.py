@@ -1,7 +1,5 @@
 """
-Spell Corrector FINAL - VERSION PARFAITE
-=========================================
-Corrections intelligentes FR/EN avec priorité médicale
+Spell Corrector FINAL 
 """
 
 from typing import List, Tuple, Dict

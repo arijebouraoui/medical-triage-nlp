@@ -1,7 +1,5 @@
 """
-Medical Reasoner - APPREND DU DATASET
-======================================
-ZERO hardcoding - tout est appris automatiquement!
+Medical Reasoner 
 """
 
 from typing import Dict, List
@@ -9,18 +7,30 @@ from collections import Counter
 
 
 class MedicalReasoner:
-    """Raisonnement médical qui apprend du dataset"""
+    """Raisonnement médical avec PRIORITÉS ABSOLUES"""
     
     def __init__(self, data_loader=None):
         """Initialise et apprend du dataset"""
         
         self.data_loader = data_loader
         
+        # PRIORITÉS ABSOLUES (overrident le dataset!)
+        self.PRIORITY_SPECIALISTS = {
+            'chest pain': 'Cardiologue',
+            'heart attack': 'Cardiologue',
+            'cardiac arrest': 'Cardiologue',
+            'headache': 'Neurologue',  # ← FIX!
+            'migraine': 'Neurologue',
+            'toothache': 'Dentiste',
+            'tooth pain': 'Dentiste',
+            'gum pain': 'Dentiste',
+            'gum bleeding': 'Dentiste',
+        }
+        
         # APPRENTISSAGE AUTOMATIQUE
         if data_loader:
             self._learn_from_dataset()
         else:
-            # Fallback minimal
             self.symptom_to_specialist = {}
             self.symptom_to_urgency = {}
     
@@ -29,14 +39,11 @@ class MedicalReasoner:
         
         print("\n📚 Apprentissage du reasoner...")
         
-        # Charger toutes les données
         all_data = self.data_loader.dataset
         
-        # Apprendre: symptôme → spécialiste
         self.symptom_to_specialist = {}
         symptom_specialist_votes = {}
         
-        # Apprendre: symptôme → urgence
         self.symptom_to_urgency = {}
         symptom_urgency_votes = {}
         
@@ -48,25 +55,23 @@ class MedicalReasoner:
             for symptom in symptoms:
                 symptom_lower = symptom.lower()
                 
-                # Voter pour spécialiste
                 if specialist:
                     if symptom_lower not in symptom_specialist_votes:
                         symptom_specialist_votes[symptom_lower] = []
                     symptom_specialist_votes[symptom_lower].append(specialist)
                 
-                # Voter pour urgence
                 if urgency:
                     if symptom_lower not in symptom_urgency_votes:
                         symptom_urgency_votes[symptom_lower] = []
                     symptom_urgency_votes[symptom_lower].append(urgency)
         
-        # Déterminer spécialiste le plus fréquent pour chaque symptôme
+        # Spécialiste le plus fréquent
         for symptom, votes in symptom_specialist_votes.items():
             most_common = Counter(votes).most_common(1)
             if most_common:
                 self.symptom_to_specialist[symptom] = most_common[0][0]
         
-        # Déterminer urgence la plus fréquente
+        # Urgence la plus fréquente
         for symptom, votes in symptom_urgency_votes.items():
             most_common = Counter(votes).most_common(1)
             if most_common:
@@ -75,7 +80,7 @@ class MedicalReasoner:
         print(f"   ✅ {len(self.symptom_to_specialist)} symptômes → spécialistes")
         print(f"   ✅ {len(self.symptom_to_urgency)} symptômes → urgences")
         
-        # Afficher quelques exemples
+        # Exemples
         print(f"\n   Exemples appris:")
         for symptom, specialist in list(self.symptom_to_specialist.items())[:5]:
             print(f"      • {symptom} → {specialist}")
@@ -89,13 +94,13 @@ class MedicalReasoner:
         if not symptoms:
             return self._default_reasoning()
         
-        # Déterminer spécialiste (appris du dataset!)
-        specialist = self._determine_specialist(symptoms)
+        # Déterminer spécialiste (AVEC PRIORITÉS + ML)
+        specialist = self._determine_specialist_with_priority(symptoms, analysis)
         
-        # Déterminer urgence (appris du dataset!)
-        urgency = self._determine_urgency(symptoms, diseases)
+        # Déterminer urgence (AVEC ML)
+        urgency = self._determine_urgency(symptoms, diseases, analysis)
         
-        # Générer recommandations
+        # Recommandations
         recommendations = self._generate_recommendations(symptoms, specialist)
         
         # Timing
@@ -111,6 +116,34 @@ class MedicalReasoner:
         
         return result
     
+    def _determine_specialist_with_priority(self, symptoms: List[Dict], analysis: Dict = None) -> str:
+        """
+        FIX: Vérifie PRIORITÉS en PREMIER, puis ML, puis Voting
+        =======================================================
+        """
+        # 1. VÉRIFIER PRIORITÉS ABSOLUES (Règles métiers strictes)
+        for symptom in symptoms:
+            symptom_name = symptom['symptom'].lower()
+            
+            # Priorité exacte
+            if symptom_name in self.PRIORITY_SPECIALISTS:
+                priority_specialist = self.PRIORITY_SPECIALISTS[symptom_name]
+                print(f"   🎯 PRIORITÉ: {symptom_name} → {priority_specialist}")
+                return priority_specialist
+        
+        # 2. IA / ML (Si disponible et confiant)
+        if analysis and analysis.get('ml_used'):
+            ml_spec = analysis.get('ml_specialist')
+            ml_conf = analysis.get('ml_specialist_confidence', 0)
+            
+            # Si l'IA est sûre d'elle (> 40% car il y a beaucoup de classes)
+            if ml_spec and ml_conf > 0.4:
+                print(f"   🤖 AI CHOICE: {ml_spec} (conf={ml_conf:.0%})")
+                return ml_spec
+        
+        # 3. Si pas de priorité ni ML, utiliser apprentissage (Voting)
+        return self._determine_specialist(symptoms)
+    
     def _determine_specialist(self, symptoms: List[Dict]) -> str:
         """Détermine spécialiste EN APPRENANT du dataset"""
         
@@ -119,48 +152,56 @@ class MedicalReasoner:
         for symptom in symptoms:
             symptom_name = symptom['symptom'].lower()
             
-            # Chercher correspondance exacte
             if symptom_name in self.symptom_to_specialist:
                 specialist_votes.append(self.symptom_to_specialist[symptom_name])
             else:
-                # Chercher correspondance partielle
                 for known_symptom, specialist in self.symptom_to_specialist.items():
-                    # Si symptôme contient un mot-clé connu
                     if any(word in symptom_name for word in known_symptom.split()):
                         specialist_votes.append(specialist)
                         break
         
-        # Vote majoritaire
         if specialist_votes:
             most_common = Counter(specialist_votes).most_common(1)
             return most_common[0][0]
         
         return 'Médecin généraliste'
     
-    def _determine_urgency(self, symptoms: List[Dict], diseases: Dict) -> str:
-        """Détermine urgence EN APPRENANT du dataset"""
+    def _determine_urgency(self, symptoms: List[Dict], diseases: Dict, analysis: Dict = None) -> str:
+        """Détermine urgence EN APPRENANT du dataset + ML"""
+        
+        # 1. IA / ML (Priorité à l'IA pour l'urgence globale du texte)
+        if analysis and analysis.get('ml_used'):
+            ml_urgency = analysis.get('ml_urgency')
+            ml_conf = analysis.get('ml_urgency_confidence', 0)
+            
+            if ml_urgency and ml_conf > 0.5:
+                # Vérifier si "URGENCE VITALE" n'est pas manqué par l'IA
+                # (Safety check avec keywords)
+                if ml_urgency != 'URGENCE VITALE':
+                    for symptom in symptoms:
+                        if symptom['symptom'].lower() in ['chest pain', 'heart attack', 'poison']:
+                             return 'URGENCE VITALE'
+                
+                print(f"   🤖 AI URGENCY: {ml_urgency} (conf={ml_conf:.0%})")
+                return ml_urgency
         
         urgency_votes = []
         
         for symptom in symptoms:
             symptom_name = symptom['symptom'].lower()
             
-            # Chercher dans ce qui a été appris
             if symptom_name in self.symptom_to_urgency:
                 urgency_votes.append(self.symptom_to_urgency[symptom_name])
         
-        # Vote majoritaire
         if urgency_votes:
             urgency_counter = Counter(urgency_votes)
             
-            # Priorité: si au moins une urgence élevée
             if 'High' in urgency_counter or 'Vital' in urgency_counter:
                 return 'URGENCE ÉLEVÉE'
             
             most_common = urgency_counter.most_common(1)
             urgency = most_common[0][0]
             
-            # Mapper vers format français
             if urgency == 'High':
                 return 'URGENCE ÉLEVÉE'
             elif urgency == 'Low':
@@ -174,7 +215,7 @@ class MedicalReasoner:
         """Détermine délai"""
         
         if 'VITALE' in urgency or 'VITAL' in urgency:
-            return 'IMMÉDIAT (appeler le 190)'
+            return 'IMMÉDIAT (Appeler les urgences)'
         elif 'ÉLEVÉE' in urgency or 'HIGH' in urgency:
             return 'Aujourd\'hui même'
         elif 'MODÉRÉE' in urgency or 'MODERATE' in urgency:
@@ -183,9 +224,8 @@ class MedicalReasoner:
             return 'Cette semaine'
     
     def _generate_recommendations(self, symptoms: List[Dict], specialist: str) -> List[str]:
-        """Génère recommandations par spécialiste"""
+        """Recommandations par spécialiste"""
         
-        # Recommandations génériques par spécialiste
         recommendations_map = {
             'Dentiste': [
                 'Éviter les aliments trop chauds ou froids',

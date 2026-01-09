@@ -4,7 +4,7 @@ Tests the NLP triage system on dataset and calculates accuracy
 """
 
 from medical_triage_system import MedicalTriageAI
-from data_loader import MedicalDatasetLoader
+from agents.data_loader.medical_data_loader import MedicalDataLoader as MedicalDatasetLoader
 import json
 
 
@@ -12,9 +12,9 @@ def extract_urgency_from_report(report: str) -> str:
     """Extract urgency level from system report."""
     if "URGENCE VITALE" in report or "ATTENTION - URGENCE VITALE" in report:
         return "URGENCE VITALE"
-    elif "URGENCE ÉLEVÉE" in report or "URGENCE ELEVEE" in report:
+    elif "URGENCE ÉLEVÉE" in report or "URGENCE ELEVEE" in report or "URGENCE Ã‰LEVÃ‰E" in report:
         return "URGENCE ÉLEVÉE"
-    elif "URGENCE MODÉRÉE" in report or "URGENCE MODEREE" in report:
+    elif "URGENCE MODÉRÉE" in report or "URGENCE MODEREE" in report or "URGENCE MODÃ‰RÃ‰E" in report:
         return "URGENCE MODÉRÉE"
     elif "NON URGENT" in report:
         return "NON URGENT"
@@ -36,20 +36,25 @@ def evaluate_system(num_samples: int = 50):
     
     # Load dataset
     print("Step 1: Loading dataset...")
-    loader = MedicalDatasetLoader("data/raw/dataset.csv")
-    loader.load_disease_symptom_dataset()
-    loader.preprocess_for_nlp()
+    print("Step 1: Loading dataset...")
+    loader = MedicalDatasetLoader("data/processed/dataset_processed.json")
     
     # Get statistics
     stats = loader.get_statistics()
     print(f"\nDataset Overview:")
-    print(f"  Total samples: {stats['total_samples']}")
+    print(f"  Total samples: {stats['total_cases']}")
     print(f"  Urgency distribution:")
     for urgency, count in stats['urgency_distribution'].items():
         print(f"    {urgency}: {count}")
     
-    # Split train/test
-    train_data, test_data = loader.split_train_test(test_size=0.2)
+    # Split train/test (Manual split since loader doesn't have it)
+    import random
+    all_data = loader.dataset.copy()
+    random.shuffle(all_data)
+    
+    split_idx = int(len(all_data) * 0.8)
+    train_data = all_data[:split_idx]
+    test_data = all_data[split_idx:]
     
     # Use subset for testing
     if num_samples > 0 and num_samples < len(test_data):
@@ -69,8 +74,21 @@ def evaluate_system(num_samples: int = 50):
     print("-" * 70)
     
     for i, sample in enumerate(test_data, 1):
-        patient_text = sample['patient_text']
-        true_urgency = sample['urgency_level']
+        if i == 1:
+            print(f"DEBUG: Sample keys: {sample.keys()}")
+        
+        patient_text = sample.get('patient_text')
+        if not patient_text:
+            print(f"WARNING: Sample {i} missing patient_text. Keys: {sample.keys()}")
+            continue
+            
+        true_urgency = sample.get('urgency_level', 'UNKNOWN')
+        # Normalize encoding issues in ground truth
+        if true_urgency == "URGENCE MODÃ‰RÃ‰E":
+            true_urgency = "URGENCE MODÉRÉE"
+        elif true_urgency == "URGENCE Ã‰LEVÃ‰E":
+            true_urgency = "URGENCE ÉLEVÉE"
+
         
         try:
             # Progress indicator
@@ -90,6 +108,14 @@ def evaluate_system(num_samples: int = 50):
             # Extract predicted urgency
             predicted_urgency = extract_urgency_from_report(report)
             
+            with open("debug_log.txt", "a") as f:
+                f.write(f"Sample {i}:\n")
+                f.write(f"True: {true_urgency}\n")
+                f.write(f"Predicted: {predicted_urgency}\n")
+                f.write(f"Report Snippet: {report[:500]}\n")
+                f.write("-" * 20 + "\n")
+
+            
             # Check correctness
             is_correct = (predicted_urgency == true_urgency)
             
@@ -107,6 +133,8 @@ def evaluate_system(num_samples: int = 50):
             })
         
         except Exception as e:
+            with open("error_log.txt", "a") as f:
+                f.write(f"Error on sample {i}: {e}\n")
             print(f"Error on sample {i}: {e}")
             continue
     

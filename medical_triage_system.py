@@ -172,7 +172,7 @@ class MedicalTriageAI:
         
         if verbose:
             print(f"\n   ✅ Raisonnement terminé:")
-            print(f"      • Niveau d'urgence: {reasoning.get('urgency_level', 'N/A')}")
+            print(f"      • Niveau d'urgence: {reasoning.get('urgency', 'N/A')}")
             print(f"      • Confidence: {reasoning.get('confidence', 0):.1%}")
         
         # Étape 3: Agent 3 - COMMUNIQUE

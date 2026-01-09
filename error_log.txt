@@ -1,0 +1,199 @@
+Error on sample 1: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 2: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 3: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 4: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 5: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 6: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 7: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 8: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 9: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 10: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 11: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 12: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 13: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 14: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 15: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 16: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 17: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 18: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 19: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 20: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 21: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 22: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 23: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 24: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 25: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 26: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 27: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 28: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 29: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 30: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 31: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 32: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 33: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 34: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 35: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 36: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 37: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 38: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 39: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 40: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 41: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 42: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 43: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 44: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 45: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 46: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 47: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 48: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 49: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 50: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 1: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 2: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 3: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 4: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 5: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 6: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 7: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 8: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 9: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 10: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 11: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 12: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 13: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 14: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 15: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 16: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 17: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 18: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 19: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 20: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 21: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 22: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 23: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 24: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 25: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 26: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 27: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 28: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 29: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 30: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 31: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 32: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 33: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 34: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 35: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 36: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 37: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 38: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 40: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 41: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 42: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 43: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 44: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 45: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 46: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 47: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 48: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 49: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 50: 'charmap' codec can't encode characters in position 18-87: character maps to <undefined>
+Error on sample 1: name 'patient_input' is not defined
+Error on sample 2: name 'patient_input' is not defined
+Error on sample 3: name 'patient_input' is not defined
+Error on sample 4: name 'patient_input' is not defined
+Error on sample 5: name 'patient_input' is not defined
+Error on sample 6: name 'patient_input' is not defined
+Error on sample 7: name 'patient_input' is not defined
+Error on sample 8: name 'patient_input' is not defined
+Error on sample 9: name 'patient_input' is not defined
+Error on sample 10: name 'patient_input' is not defined
+Error on sample 11: name 'patient_input' is not defined
+Error on sample 12: name 'patient_input' is not defined
+Error on sample 13: name 'patient_input' is not defined
+Error on sample 14: name 'patient_input' is not defined
+Error on sample 15: name 'patient_input' is not defined
+Error on sample 16: name 'patient_input' is not defined
+Error on sample 17: name 'patient_input' is not defined
+Error on sample 18: name 'patient_input' is not defined
+Error on sample 19: name 'patient_input' is not defined
+Error on sample 20: name 'patient_input' is not defined
+Error on sample 21: name 'patient_input' is not defined
+Error on sample 22: name 'patient_input' is not defined
+Error on sample 23: name 'patient_input' is not defined
+Error on sample 24: name 'patient_input' is not defined
+Error on sample 25: name 'patient_input' is not defined
+Error on sample 26: name 'patient_input' is not defined
+Error on sample 27: name 'patient_input' is not defined
+Error on sample 28: name 'patient_input' is not defined
+Error on sample 29: name 'patient_input' is not defined
+Error on sample 30: name 'patient_input' is not defined
+Error on sample 31: name 'patient_input' is not defined
+Error on sample 32: name 'patient_input' is not defined
+Error on sample 33: name 'patient_input' is not defined
+Error on sample 34: name 'patient_input' is not defined
+Error on sample 35: name 'patient_input' is not defined
+Error on sample 36: name 'patient_input' is not defined
+Error on sample 37: name 'patient_input' is not defined
+Error on sample 38: name 'patient_input' is not defined
+Error on sample 39: name 'patient_input' is not defined
+Error on sample 40: name 'patient_input' is not defined
+Error on sample 41: name 'patient_input' is not defined
+Error on sample 42: name 'patient_input' is not defined
+Error on sample 43: name 'patient_input' is not defined
+Error on sample 44: name 'patient_input' is not defined
+Error on sample 45: name 'patient_input' is not defined
+Error on sample 46: name 'patient_input' is not defined
+Error on sample 47: name 'patient_input' is not defined
+Error on sample 48: name 'patient_input' is not defined
+Error on sample 49: name 'patient_input' is not defined
+Error on sample 50: name 'patient_input' is not defined
+Error on sample 1: name 'patient_input' is not defined
+Error on sample 2: name 'patient_input' is not defined
+Error on sample 3: name 'patient_input' is not defined
+Error on sample 4: name 'patient_input' is not defined
+Error on sample 5: name 'patient_input' is not defined
+Error on sample 6: name 'patient_input' is not defined
+Error on sample 7: name 'patient_input' is not defined
+Error on sample 8: name 'patient_input' is not defined
+Error on sample 9: name 'patient_input' is not defined
+Error on sample 10: name 'patient_input' is not defined
+Error on sample 11: name 'patient_input' is not defined
+Error on sample 12: name 'patient_input' is not defined
+Error on sample 13: name 'patient_input' is not defined
+Error on sample 14: name 'patient_input' is not defined
+Error on sample 15: name 'patient_input' is not defined
+Error on sample 16: name 'patient_input' is not defined
+Error on sample 17: name 'patient_input' is not defined
+Error on sample 18: name 'patient_input' is not defined
+Error on sample 19: name 'patient_input' is not defined
+Error on sample 20: name 'patient_input' is not defined
+Error on sample 21: name 'patient_input' is not defined
+Error on sample 22: name 'patient_input' is not defined
+Error on sample 23: name 'patient_input' is not defined
+Error on sample 24: name 'patient_input' is not defined
+Error on sample 25: name 'patient_input' is not defined
+Error on sample 26: name 'patient_input' is not defined
+Error on sample 27: name 'patient_input' is not defined
+Error on sample 28: name 'patient_input' is not defined
+Error on sample 29: name 'patient_input' is not defined
+Error on sample 30: name 'patient_input' is not defined
+Error on sample 31: name 'patient_input' is not defined
+Error on sample 32: name 'patient_input' is not defined
+Error on sample 33: name 'patient_input' is not defined
+Error on sample 34: name 'patient_input' is not defined
+Error on sample 35: name 'patient_input' is not defined
+Error on sample 36: name 'patient_input' is not defined
+Error on sample 37: name 'patient_input' is not defined
+Error on sample 38: name 'patient_input' is not defined
+Error on sample 39: name 'patient_input' is not defined
+Error on sample 40: name 'patient_input' is not defined
+Error on sample 41: name 'patient_input' is not defined
+Error on sample 42: name 'patient_input' is not defined
+Error on sample 43: name 'patient_input' is not defined
+Error on sample 44: name 'patient_input' is not defined
+Error on sample 45: name 'patient_input' is not defined
+Error on sample 46: name 'patient_input' is not defined
+Error on sample 47: name 'patient_input' is not defined
+Error on sample 48: name 'patient_input' is not defined
+Error on sample 49: name 'patient_input' is not defined
+Error on sample 50: name 'patient_input' is not defined

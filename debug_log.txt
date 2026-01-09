@@ -1,0 +1,297 @@
+Sample 1:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 2:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 3:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 4:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 5:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 6:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 7:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 8:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 9:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 10:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 11:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 12:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 13:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 14:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 15:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 16:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 17:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 18:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 19:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 20:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 21:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 22:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 23:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 24:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 25:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 26:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 27:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 28:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 29:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 30:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 31:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 32:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 33:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 34:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 35:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 36:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 37:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 38:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 39:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 40:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 41:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 42:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 43:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 44:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 45:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 46:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 47:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 48:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 49:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 50:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 1:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 2:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 3:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 4:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 5:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 6:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 7:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 8:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 9:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 10:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 11:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 12:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 13:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 14:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 15:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 16:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 17:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 18:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 19:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 20:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 21:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 22:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 23:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 24:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 25:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 26:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 27:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 28:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 29:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 30:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 31:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 32:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 33:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 34:
+True: URGENCE VITALE
+Predicted: UNKNOWN
+Sample 35:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 36:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 37:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 38:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 40:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 41:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 42:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 43:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 44:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 45:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 46:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 47:
+True: URGENCE ÉLEVÉE
+Predicted: UNKNOWN
+Sample 48:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 49:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN
+Sample 50:
+True: URGENCE MODÉRÉE
+Predicted: UNKNOWN

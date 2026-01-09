@@ -1,11 +1,12 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
+*.so
 
-# Virtual Environment
+# Virtual environment
 venv/
 env/
 ENV/
@@ -16,31 +17,14 @@ ENV/
 *.swp
 *.swo
 
-# Logs
-*.log
-debug_log.txt
-error_log.txt
-
-# Models (Avoid large binaries on git)
-models/
-*.pkl
-
-# Data & Config
-learned_symptoms.json
-
-# Temp Debug Scripts
-debug_*.py
-verify_*.py
-test_*.py
-generate_pdf.py
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Data backups 
-data/processed/dataset_processed_backup_*.json
+# Streamlit
+.streamlit/secrets.toml
 
-# Anciens scripts 
-add_symptoms.py
-add_specialists_to_dataset.py
+# Jupyter
+.ipynb_checkpoints/
+
+# Note: models/*.pkl est géré par Git LFS (voir .gitattributes)

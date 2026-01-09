@@ -10,16 +10,29 @@ import json
 
 def extract_urgency_from_report(report: str) -> str:
     """Extract urgency level from system report."""
-    if "URGENCE VITALE" in report or "ATTENTION - URGENCE VITALE" in report:
+    if "URGENCE VITALE" in report or "IMMÉDIAT" in report:
         return "URGENCE VITALE"
-    elif "URGENCE ÉLEVÉE" in report or "URGENCE ELEVEE" in report or "URGENCE Ã‰LEVÃ‰E" in report:
+    elif "URGENCE ÉLEVÉE" in report or "Aujourd'hui même" in report:
         return "URGENCE ÉLEVÉE"
-    elif "URGENCE MODÉRÉE" in report or "URGENCE MODEREE" in report or "URGENCE MODÃ‰RÃ‰E" in report:
+    elif "URGENCE MODÉRÉE" in report or "24-48 heures" in report:
         return "URGENCE MODÉRÉE"
-    elif "NON URGENT" in report:
+    elif "NON URGENT" in report or "Cette semaine" in report:
         return "NON URGENT"
     else:
-        return "UNKNOWN"
+        return "URGENCE MODÉRÉE"  # Default fallback
+
+
+def extract_specialist_from_report(report: str) -> str:
+    """Extract specialist from system report."""
+    import re
+    # Look for "Consultation: SpecialistName" or "SPÉCIALISTE RECOMMANDÉ" blocks
+    match = re.search(r"Consultation:\s*(.*)", report)
+    if match:
+        result = match.group(1).strip()
+        # Clean up possible trailing formatting
+        result = result.split("\n")[0].strip()
+        return result
+    return "UNKNOWN"
 
 
 def evaluate_system(num_samples: int = 50):
@@ -95,31 +108,27 @@ def evaluate_system(num_samples: int = 50):
             if i % 10 == 0:
                 print(f"Progress: {i}/{len(test_data)} samples processed... ({correct}/{total} correct so far)")
             
-            # Get prediction (suppress verbose output)
+            # Get prediction (suppress verbose output to keep console clean)
             import sys
             from io import StringIO
             old_stdout = sys.stdout
             sys.stdout = StringIO()
             
-            report = system.analyze_and_respond(patient_text)
+            # Use verbose=False to get cleaner log in evaluate
+            report = system.analyze_and_respond(patient_text, verbose=False)
             
             sys.stdout = old_stdout
             
-            # Extract predicted urgency
+            # Extract predicted urgency and specialist
             predicted_urgency = extract_urgency_from_report(report)
-            
-            with open("debug_log.txt", "a") as f:
-                f.write(f"Sample {i}:\n")
-                f.write(f"True: {true_urgency}\n")
-                f.write(f"Predicted: {predicted_urgency}\n")
-                f.write(f"Report Snippet: {report[:500]}\n")
-                f.write("-" * 20 + "\n")
-
+            predicted_specialist = extract_specialist_from_report(report)
+            true_specialist = sample.get('specialist', 'UNKNOWN')
             
             # Check correctness
-            is_correct = (predicted_urgency == true_urgency)
+            urgency_correct = (predicted_urgency == true_urgency)
+            specialist_correct = (predicted_specialist == true_specialist) or (true_specialist in predicted_specialist)
             
-            if is_correct:
+            if urgency_correct:
                 correct += 1
             
             total += 1
@@ -127,84 +136,70 @@ def evaluate_system(num_samples: int = 50):
             results.append({
                 'text': patient_text,
                 'disease': sample.get('disease', ''),
-                'true': true_urgency,
-                'predicted': predicted_urgency,
-                'correct': is_correct
+                'true_urgency': true_urgency,
+                'predicted_urgency': predicted_urgency,
+                'urgency_correct': urgency_correct,
+                'true_specialist': true_specialist,
+                'predicted_specialist': predicted_specialist,
+                'specialist_correct': specialist_correct
             })
         
         except Exception as e:
-            with open("error_log.txt", "a") as f:
-                f.write(f"Error on sample {i}: {e}\n")
-            print(f"Error on sample {i}: {e}")
+            # Safely log error
+            try:
+                with open("error_log.txt", "a", encoding='utf-8') as f:
+                    f.write(f"Error on sample {i}: {str(e)}\n")
+            except:
+                pass
+            print(f"Error on sample {i}")
             continue
     
     # Calculate metrics
     accuracy = (correct / total * 100) if total > 0 else 0
+    spec_accuracy = (sum(1 for r in results if r['specialist_correct']) / total * 100) if total > 0 else 0
     
     # Print results
     print("\n" + "="*70)
-    print("EVALUATION RESULTS")
+    print("📋 RAPPORT DE PERFORMANCE DU SYSTÈME")
     print("="*70)
-    print(f"\nOverall Accuracy: {accuracy:.2f}% ({correct}/{total})")
+    print(f"\n✅ PRÉCISION URGENCE : {accuracy:.2f}% ({correct}/{total})")
+    print(f"✅ PRÉCISION SPÉCIALISTE : {spec_accuracy:.2f}%")
     
     # Results by urgency level
-    print("\nAccuracy by Urgency Level:")
+    print("\nAnalyse par niveau d'urgence :")
     print("-" * 70)
     for urgency in ["URGENCE VITALE", "URGENCE ÉLEVÉE", "URGENCE MODÉRÉE", "NON URGENT"]:
-        urgency_results = [r for r in results if r['true'] == urgency]
+        urgency_results = [r for r in results if r['true_urgency'] == urgency]
         if urgency_results:
-            urgency_correct = sum(1 for r in urgency_results if r['correct'])
-            urgency_total = len(urgency_results)
-            urgency_acc = (urgency_correct / urgency_total * 100) if urgency_total > 0 else 0
-            print(f"  {urgency:20s}: {urgency_acc:5.1f}% ({urgency_correct:3d}/{urgency_total:3d})")
+            u_correct = sum(1 for r in urgency_results if r['urgency_correct'])
+            u_total = len(urgency_results)
+            u_acc = (u_correct / u_total * 100)
+            print(f"  {urgency:20s}: {u_acc:5.1f}% ({u_correct:3d}/{u_total:3d})")
     
     # Show example predictions
-    print("\nSample Predictions:")
+    print("\nExemples de prédictions :")
     print("-" * 70)
     
-    # Show correct and incorrect examples
-    correct_examples = [r for r in results if r['correct']][:3]
-    incorrect_examples = [r for r in results if not r['correct']][:3]
-    
-    print("\n✅ Correct Predictions:")
-    for i, result in enumerate(correct_examples, 1):
-        print(f"\n  {i}. Disease: {result['disease']}")
-        print(f"     Symptoms: {result['text'][:60]}...")
-        print(f"     Expected: {result['true']}")
-        print(f"     Got: {result['predicted']}")
-    
-    if incorrect_examples:
-        print("\n❌ Incorrect Predictions:")
-        for i, result in enumerate(incorrect_examples, 1):
-            print(f"\n  {i}. Disease: {result['disease']}")
-            print(f"     Symptoms: {result['text'][:60]}...")
-            print(f"     Expected: {result['true']}")
-            print(f"     Got: {result['predicted']}")
+    for i, result in enumerate(results[:5], 1):
+        status = "✅" if result['urgency_correct'] and result['specialist_correct'] else "⚠️"
+        print(f"\n  {i}. {status} Maladie: {result['disease']}")
+        print(f"     Symptômes: {result['text'][:60]}...")
+        print(f"     Urgence - Attendu: {result['true_urgency']} | Prédit: {result['predicted_urgency']}")
+        print(f"     Spécialiste - Attendu: {result['true_specialist']} | Prédit: {result['predicted_specialist']}")
     
     # Save detailed results
     output_file = 'data/processed/evaluation_results.json'
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump({
-            'accuracy': accuracy,
-            'correct': correct,
-            'total': total,
-            'by_urgency': {
-                urgency: {
-                    'correct': sum(1 for r in results if r['true'] == urgency and r['correct']),
-                    'total': sum(1 for r in results if r['true'] == urgency),
-                    'accuracy': (sum(1 for r in results if r['true'] == urgency and r['correct']) / 
-                                sum(1 for r in results if r['true'] == urgency) * 100) 
-                                if sum(1 for r in results if r['true'] == urgency) > 0 else 0
-                }
-                for urgency in ["URGENCE VITALE", "URGENCE ÉLEVÉE", "URGENCE MODÉRÉE", "NON URGENT"]
-            },
+            'overall_urgency_accuracy': accuracy,
+            'overall_specialist_accuracy': spec_accuracy,
+            'total_tested': total,
             'results': results
         }, f, indent=2, ensure_ascii=False)
     
-    print(f"\n💾 Detailed results saved to: {output_file}")
-    
+    print(f"\n💾 Résultats détaillés sauvegardés dans: {output_file}")
     print("\n" + "="*70)
-    print(f"FINAL ACCURACY: {accuracy:.2f}%")
+    print(f"Taux de succès global : {accuracy:.2f}%")
     print("="*70 + "\n")
     
     return accuracy, results

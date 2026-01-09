@@ -16,12 +16,27 @@ ENV/
 *.swp
 *.swo
 
+# Logs
+*.log
+debug_log.txt
+error_log.txt
+
+# Models (Avoid large binaries on git)
+models/
+*.pkl
+
+# Data & Config
+learned_symptoms.json
+
+# Temp Debug Scripts
+debug_*.py
+verify_*.py
+test_*.py
+generate_pdf.py
+
 # OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
 
 # Data backups 
 data/processed/dataset_processed_backup_*.json

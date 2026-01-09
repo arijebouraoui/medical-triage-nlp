@@ -1,5 +1,5 @@
 """
-Interface Streamlit 
+Interface Streamlit avec Random Forest ML
 """
 
 import streamlit as st
@@ -14,6 +14,7 @@ if project_root not in sys.path:
 from agents.data_loader.medical_data_loader import MedicalDataLoader
 from agents.analyzer.nlp_analyzer_v3 import MedicalNLPAnalyzer
 from agents.reasoner.medical_reasoner import MedicalReasoner
+from agents.reasoner.ml_medical_reasoner import MLMedicalReasoner  # ← NOUVEAU
 from agents.decider.decision_generator import DecisionGenerator
 
 st.set_page_config(
@@ -45,21 +46,42 @@ if 'initialized' not in st.session_state:
     st.session_state.initialized = False
     st.session_state.history = []
     st.session_state.selected_country = "Tunisie"  # Défaut
+    st.session_state.use_ml_model = True  # ML par défaut
 
 @st.cache_resource
-def init_system():
+def init_system(use_ml=True):
+    """
+    Initialise le système avec choix du modèle de raisonnement
+    
+    Args:
+        use_ml: Si True, utilise Random Forest. Sinon, règles classiques
+    """
     try:
         data_path = "data/processed/dataset_processed.json"
         data_loader = MedicalDataLoader(data_path)
         analyzer = MedicalNLPAnalyzer(data_path)
-        reasoner = MedicalReasoner(data_loader)
-        return analyzer, reasoner, data_loader, True
+        
+        # Charger le reasoner selon le choix
+        if use_ml:
+            model_path = 'models/random_forest_reasoner.pkl'
+            if os.path.exists(model_path):
+                reasoner = MLMedicalReasoner(model_path=model_path)
+                st.success("✅ Random Forest chargé (97.27% accuracy)")
+            else:
+                st.error(f"❌ Modèle ML introuvable: {model_path}")
+                st.info("Lancer: python train_ml_reasoner.py")
+                reasoner = MedicalReasoner(data_loader)
+                use_ml = False  # Fallback
+        else:
+            reasoner = MedicalReasoner(data_loader)
+        
+        return analyzer, reasoner, data_loader, True, use_ml
     except Exception as e:
         st.error(f"❌ Erreur: {e}")
-        return None, None, None, False
+        return None, None, None, False, False
 
 st.markdown('<div class="main-header">🏥 Système de Triage Médical Intelligent</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Analyse NLP Avancée • Multilingue • Data-Driven AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Analyse NLP Avancée • Multilingue • Machine Learning</div>', unsafe_allow_html=True)
 
 # WARNING: Vérification des dépendances pour l'utilisateur
 try:
@@ -88,6 +110,36 @@ with st.sidebar:
     st.session_state.selected_country = country
     
     language = st.selectbox("🗣️ Langue", ["Français", "English", "العربية"], index=0)
+    
+    st.divider()
+    
+    # ==========================================
+    # NOUVEAU: CHOIX DU MODÈLE DE RAISONNEMENT
+    # ==========================================
+    st.header("🤖 Modèle de Raisonnement")
+    
+    use_ml_model = st.checkbox(
+        "Random Forest ML",
+        value=st.session_state.use_ml_model,
+        help="Si coché: Random Forest (97% accuracy). Sinon: Règles + Statistiques"
+    )
+    
+    # Si changement de modèle, réinitialiser
+    if use_ml_model != st.session_state.use_ml_model:
+        st.session_state.use_ml_model = use_ml_model
+        st.session_state.initialized = False
+        st.rerun()
+    
+    # Afficher info modèle
+    if use_ml_model:
+        st.success("✅ Random Forest")
+        st.caption("📊 97.27% accuracy sur 989 cas")
+        st.caption("🌳 100 arbres de décision")
+        st.caption("📈 Entraîné sur 4,944 cas")
+    else:
+        st.info("ℹ️ Règles + Statistiques")
+        st.caption("📋 17 priorités médicales")
+        st.caption("🗳️ Votes majoritaires")
     
     st.divider()
     
@@ -128,12 +180,13 @@ with st.sidebar:
 
 if not st.session_state.initialized:
     with st.spinner("🔧 Initialisation..."):
-        analyzer, reasoner, data_loader, success = init_system()
+        analyzer, reasoner, data_loader, success, ml_used = init_system(use_ml=st.session_state.use_ml_model)
         
         if success:
             st.session_state.analyzer = analyzer
             st.session_state.reasoner = reasoner
             st.session_state.data_loader = data_loader
+            st.session_state.ml_reasoner_active = ml_used
             st.session_state.initialized = True
             st.success("✅ Système prêt!")
         else:
@@ -195,9 +248,44 @@ with tab1:
                 else:
                     st.info(f"ℹ️ **{urgency}**")
                 
-                # VISUALISATION CERVEAU IA
+                # ==========================================
+                # NOUVEAU: AFFICHER PROBABILITÉS RANDOM FOREST
+                # ==========================================
+                if st.session_state.ml_reasoner_active and 'model_probabilities' in reasoning:
+                    with st.expander("🤖 Prédictions Random Forest ML", expanded=True):
+                        probabilities = reasoning['model_probabilities']
+                        
+                        # Confiances globales
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            spec_conf = probabilities.get('specialist_confidence', 0)
+                            st.metric("Confiance Spécialiste", f"{spec_conf:.1%}")
+                        with col2:
+                            urg_conf = probabilities.get('urgency_confidence', 0)
+                            st.metric("Confiance Urgence", f"{urg_conf:.1%}")
+                        
+                        # Top 3 spécialistes
+                        if 'top_3_specialists' in probabilities:
+                            st.markdown("#### 📊 Top 3 Spécialistes (probabilités)")
+                            
+                            top_3 = probabilities['top_3_specialists']
+                            cols = st.columns(3)
+                            
+                            for i, (specialist, proba) in enumerate(top_3.items()):
+                                with cols[i]:
+                                    # Ajouter emoji si c'est le choix final
+                                    final_spec = reasoning.get('specialist', '')
+                                    emoji = "✅ " if specialist == final_spec else ""
+                                    st.metric(
+                                        label=f"{emoji}{specialist}",
+                                        value=f"{proba:.1%}"
+                                    )
+                        
+                        st.caption("🌳 Random Forest: 100 arbres, 97.27% accuracy")
+                
+                # VISUALISATION CERVEAU IA (ancien code conservé)
                 if ml_used:
-                    with st.expander("🧠 Analyse du Cerveau Artificiel (True NLP)", expanded=True):
+                    with st.expander("🧠 Analyse du Cerveau Artificiel (True NLP)", expanded=False):
                         c1, c2 = st.columns(2)
                         with c1:
                             st.metric("Confiance Spécialiste", f"{ml_spec_conf:.1%}", delta="AI Model")
@@ -280,6 +368,8 @@ with tab1:
                 
             except Exception as e:
                 st.error(f"❌ Erreur: {e}")
+                import traceback
+                st.code(traceback.format_exc())
 
 with tab2:
     st.header("📊 Analyse NLP Détaillée")
@@ -347,7 +437,7 @@ with tab3:
 st.divider()
 st.markdown("""
 <div style='text-align: center; color: #757575;'>
-    <p><strong>Système de Triage Médical v3.0</strong></p>
-    <p>NLP Avancé • Multilingue • Data-Driven</p>
+    <p><strong>Système de Triage Médical v4.0 ML</strong></p>
+    <p>NLP Avancé • Random Forest • 97.27% Accuracy</p>
 </div>
 """, unsafe_allow_html=True)

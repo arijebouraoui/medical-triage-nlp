@@ -28,3 +28,19 @@ Thumbs.db
 .ipynb_checkpoints/
 
 # Note: models/*.pkl est géré par Git LFS (voir .gitattributes)
+
+# Debug files
+debug_*.py
+debug_log.txt
+error_log.txt
+verify_*.py
+visualize_*.py
+evaluation_output.txt
+last_evaluation.txt
+files_list.txt
+
+# Backups
+data/processed/*_backup_*.json
+
+# Reports 
+reports/figures/*.png
